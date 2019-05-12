@@ -1,0 +1,10 @@
+varying vec3 outNormal;
+varying vec2 outTexCoord;
+
+void main()
+{
+    const vec3 lightDir = normalize(vec3(0.5, -1.0, -1.0));
+    float NL = max(0.0, dot(normalize(outNormal), -lightDir));
+
+    gl_FragColor = vec4(vec3(1.0) * NL, 1.0);
+}

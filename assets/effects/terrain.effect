@@ -1,0 +1,13 @@
+{
+    "techniques" :
+    {
+        "Default" :
+        {
+            "Default" :
+            {
+                "shaders" : ["TerrainVS", "TerrainPS"],
+                "layout" : "./assets/shaders/terrain_shader_layout.sl"
+            }
+        }
+    }
+}
