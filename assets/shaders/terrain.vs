@@ -11,7 +11,8 @@ uniform sampler2D tex0;
 
 vec2 get_uv(vec2 p)
 {
-    return max(vec2(0.0), min(vec2(1.0), (p + MapSize * 0.5) / MapSize));
+    vec2 size = MapSize + 1.0;
+    return max(vec2(0.0), min(vec2(1.0), (p + size * 0.5) / size));
 }
 
 float get_height(vec2 p)
@@ -22,6 +23,8 @@ float get_height(vec2 p)
 
 vec3 calculate_normal(vec2 p)
 {
+    vec2 size = MapSize - vec2(1.0);
+    p = get_uv(p) * size - size * 0.5;
     vec3 v1 = vec3(p.x, 0.0, p.y);
     vec3 v2 = vec3(p.x + 1.0, 0.0, p.y);
     vec3 v3 = vec3(p.x, 0.0, p.y - 1.0);

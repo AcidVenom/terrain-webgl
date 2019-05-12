@@ -60,7 +60,7 @@ export function Terrain(scene, width, height)
         _createTerrainMesh(scene);
         _renderer = this.addComponent(new Snuff.RendererComponent(_mesh, _material));
 
-        _renderer.setUniformFloat2("MapSize", Snuff.math.Vector2.fromValues(_width + 1, _height + 1));
+        _renderer.setUniformFloat2("MapSize", Snuff.math.Vector2.fromValues(_width, _height));
     }
 
     Snuff.Entity.call(this, scene);
