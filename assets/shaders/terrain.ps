@@ -17,13 +17,13 @@ void main()
     float tiling = 4.0;
 
     const vec3 lightDir = normalize(vec3(0.5, -1.0, -1.0));
-    const vec3 lightColor = vec3(1.0, 0.9, 0.875);
+    const vec3 lightColor = vec3(1.0, 1.0, 1.0);
     
     vec2 uv = outTexCoord * tiling;
     vec3 albedo = texture2D(tex1, uv).rgb;
     float specular = texture2D(tex3, uv).r;
 
-    vec3 PBR = lightColor * cook_torrance(outWorld, outNormal, -lightDir, Roughness, Metallic, mix(0.5, 1.0, Specular * specular));
+    vec3 PBR = lightColor * cook_torrance(outWorld, outNormal, -lightDir, Roughness, Metallic, mix(0.6, 1.0, Specular * specular));
 
     gl_FragColor = vec4(albedo * PBR, 1.0);
 }
