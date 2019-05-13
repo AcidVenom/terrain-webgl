@@ -1,10 +1,29 @@
 varying vec3 outNormal;
 varying vec2 outTexCoord;
+varying vec3 outWorld;
+
+uniform float Roughness;
+uniform float Metallic;
+uniform float Specular;
+
+uniform vec2 MapSize;
+
+uniform sampler2D tex1;
+uniform sampler2D tex2;
+uniform sampler2D tex3;
 
 void main()
 {
-    const vec3 lightDir = normalize(vec3(0.5, -1.0, -1.0));
-    float NL = max(0.0, dot(normalize(outNormal), -lightDir));
+    float tiling = 4.0;
 
-    gl_FragColor = vec4(vec3(1.0) * NL, 1.0);
+    const vec3 lightDir = normalize(vec3(0.5, -1.0, -1.0));
+    const vec3 lightColor = vec3(1.0, 0.9, 0.875);
+    
+    vec2 uv = outTexCoord * tiling;
+    vec3 albedo = texture2D(tex1, uv).rgb;
+    float specular = texture2D(tex3, uv).r;
+
+    vec3 PBR = lightColor * cook_torrance(outWorld, outNormal, -lightDir, Roughness, Metallic, mix(0.5, 1.0, Specular * specular));
+
+    gl_FragColor = vec4(albedo * PBR, 1.0);
 }

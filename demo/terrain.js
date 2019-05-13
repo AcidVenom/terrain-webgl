@@ -3,6 +3,11 @@ import * as Snuff from "../snuffbox-webgl/snuff-webgl.js"
 export function Terrain(scene, width, height)
 {
     var _heightMap = null;
+    
+    var _sandColor = null;
+    var _sandNormal = null;
+    var _sandSpecular = null;
+
     var _mesh = null;
     var _material = null;
     var _renderer = null;
@@ -53,23 +58,36 @@ export function Terrain(scene, width, height)
         _heightMap = renderer.createTexture(Snuff.TextureTypes.Tex2D, Snuff.TextureFormats.RGBA);
         _heightMap.loadFromImage("./assets/textures/terrain_height.png");
 
+        _sandColor = renderer.createTexture(Snuff.TextureTypes.Tex2D, Snuff.TextureFormats.RGBA);
+        _sandColor.loadFromImage("./assets/textures/splats/sand_color.jpg");
+
+        _sandNormal = renderer.createTexture(Snuff.TextureTypes.Tex2D, Snuff.TextureFormats.RGBA);
+        _sandNormal.loadFromImage("./assets/textures/splats/sand_normal.jpg");
+
+        _sandSpecular = renderer.createTexture(Snuff.TextureTypes.Tex2D, Snuff.TextureFormats.RGBA);
+        _sandSpecular.loadFromImage("./assets/textures/splats/sand_specular.jpg");
+
         var effect = renderer.getEffect("Terrain");
         
-        _material = new Snuff.Material(effect, "Default", [_heightMap]);
+        _material = new Snuff.Material(effect, "Default", [_heightMap, _sandColor, _sandNormal, _sandSpecular]);
         
         _createTerrainMesh(scene);
         _renderer = this.addComponent(new Snuff.RendererComponent(_mesh, _material));
 
         _renderer.setUniformFloat2("MapSize", Snuff.math.Vector2.fromValues(_width, _height));
+
+        _renderer.setUniformFloat("Metallic", 0.0);
+        _renderer.setUniformFloat("Roughness", 0.9);
+        _renderer.setUniformFloat("Specular", 0.75);
     }
 
     Snuff.Entity.call(this, scene);
 
-    var _angle = 0.0;
+    var _t = 0.0;
     this.onUpdate = function(dt)
     {
-        _angle += dt * 30.0;
-        this.transform().setRotationEuler(0.0, _angle, 0.0);
+        _t += dt * 1.0;
+        this.transform().setRotationEuler(0.0, _t * 30.0, 0.0);
     }
 }
 

@@ -13,6 +13,12 @@
         { "name" : "Model", "type" : "mat4" },
         { "name" : "InvTransposedModel", "type" : "mat3" },
         { "name" : "MapSize", "type" : "vec2" },
-        { "name" : "tex0", "type" : "sampler2D" }
+        { "name" : "Metallic", "type" : "float" },
+        { "name" : "Roughness", "type" : "float" },
+        { "name" : "Specular", "type" : "float" },
+        { "name" : "tex0", "type" : "sampler2D" },
+        { "name" : "tex1", "type" : "sampler2D" },
+        { "name" : "tex2", "type" : "sampler2D" },
+        { "name" : "tex3", "type" : "sampler2D" }
     ]
 }

@@ -2,6 +2,7 @@ attribute vec2 inPosition;
 
 varying vec3 outNormal;
 varying vec2 outTexCoord;
+varying vec3 outWorld;
 
 uniform vec2 MapSize;
 
@@ -41,8 +42,12 @@ vec3 calculate_normal(vec2 p)
 
 void main()
 {
-    
-    gl_Position = Projection * View * Model * vec4(vec3(inPosition.x, get_height(inPosition), inPosition.y), 1.0);
-    outNormal = calculate_normal(inPosition);
+    vec4 worldPos = vec4(vec3(inPosition.x, get_height(inPosition), inPosition.y), 1.0);
+    worldPos = Model * worldPos;
+
+    gl_Position = Projection * View * worldPos;
+
+    outNormal = InvTransposedModel * calculate_normal(inPosition);
     outTexCoord = get_uv(inPosition);
+    outWorld = worldPos.xyz;
 }

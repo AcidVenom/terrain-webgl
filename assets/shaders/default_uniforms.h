@@ -6,4 +6,4 @@ uniform vec3 EyePosition;
 uniform float Time;
 
 uniform mat4 Model;
-uniform mat4 InvTransposedModel;
+uniform mat3 InvTransposedModel;

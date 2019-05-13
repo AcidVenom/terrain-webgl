@@ -15,7 +15,7 @@ export function DemoScene(renderer)
         });
 
         renderer.loadShaderFromPath("./assets/shaders/terrain.ps", Snuff.ShaderTypes.Pixel, {
-            include: ["./assets/shaders/default_uniforms.h"],
+            include: ["./assets/shaders/default_uniforms.h", "./assets/shaders/pbr.h"],
             name: "TerrainPS"
         });
 
