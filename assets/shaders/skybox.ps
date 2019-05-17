@@ -1,0 +1,9 @@
+varying vec2 outPosition;
+
+uniform samplerCube tex0;
+
+void main()
+{
+    vec4 worldPos = InvViewDirProjection * vec4(outPosition, 1.0, 1.0);
+    gl_FragColor = textureCube(tex0, normalize(worldPos.xyz / worldPos.w));
+}

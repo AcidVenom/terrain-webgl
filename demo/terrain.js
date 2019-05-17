@@ -82,13 +82,6 @@ export function Terrain(scene, width, height)
     }
 
     Snuff.Entity.call(this, scene);
-
-    var _t = 0.0;
-    this.onUpdate = function(dt)
-    {
-        _t += dt * 1.0;
-        this.transform().setRotationEuler(0.0, _t * 30.0, 0.0);
-    }
 }
 
 Terrain.prototype = Object.create(Snuff.Entity.prototype);

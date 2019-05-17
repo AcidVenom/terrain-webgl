@@ -1,0 +1,25 @@
+{
+    "techniques" :
+    {
+        "Default" :
+        {
+            "Skybox" :
+            {
+                "shaders" : ["SkyboxVS", "SkyboxPS"],
+                "layout" : "./assets/shaders/skybox_shader_layout.sl",
+                "depthState" : "None",
+                "blendState" : "Opaque",
+                "cullFace" : "None"
+            },
+
+            "SkyboxFilter" :
+            {
+                "shaders" : ["SkyboxFilterVS", "SkyboxFilterPS"],
+                "layout" : "./assets/shaders/skybox_filter_shader_layout.sl",
+                "depthState" : "None",
+                "blendState" : "Opaque",
+                "cullFace" : "None"
+            }
+        }
+    }
+}
