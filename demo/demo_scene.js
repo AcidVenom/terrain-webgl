@@ -87,9 +87,10 @@ export function DemoScene(renderer)
 
         var t = Math.min(timeOfDay, 1.0);
         
-        var vecA = Snuff.math.Vector3.fromValues(0.5, 0.0, -1.0);
-        var vecB = Snuff.math.Vector3.fromValues(0.5, 1.0, 0.0);
-        var vecC = Snuff.math.Vector3.fromValues(0.5, 0.0, 1.0);
+        var x = 1.0;
+        var vecA = Snuff.math.Vector3.fromValues(x, 0.0, -1.0);
+        var vecB = Snuff.math.Vector3.fromValues(x, 1.0, 0.0);
+        var vecC = Snuff.math.Vector3.fromValues(x, 0.0, 1.0);
 
         var vecFirst = Snuff.math.Vector3.create();
         var vecSecond = Snuff.math.Vector3.create();

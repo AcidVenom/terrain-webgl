@@ -1,14 +1,13 @@
 attribute vec2 inPosition;
 
-varying vec3 outNormal;
-varying vec2 outTexCoord;
+varying mat3 outTBN;
 varying vec3 outWorld;
 
 uniform vec2 MapSize;
 
 uniform sampler2D tex0;
 
-#define HEIGHT_SCALE 100.0
+#define HEIGHT_SCALE 150.0
 
 vec2 get_uv(vec2 p)
 {
@@ -22,7 +21,7 @@ float get_height(vec2 p)
     return texture2D(tex0, uv).r * HEIGHT_SCALE;
 }
 
-vec3 calculate_normal(vec2 p)
+vec3 calculate_normal(vec2 p, out vec3 tangent, out vec3 bitangent)
 {
     vec2 size = MapSize - vec2(1.0);
     p = get_uv(p) * size - size * 0.5;
@@ -37,7 +36,10 @@ vec3 calculate_normal(vec2 p)
     vec3 e1 = v2 - v1;
     vec3 e2 = v3 - v1;
 
-    return cross(e1, e2);
+    tangent = normalize(e1);
+    bitangent = normalize(e2);
+
+    return normalize(cross(e1, e2));
 }
 
 void main()
@@ -47,7 +49,13 @@ void main()
 
     gl_Position = Projection * View * worldPos;
 
-    outNormal = InvTransposedModel * calculate_normal(inPosition);
-    outTexCoord = get_uv(inPosition);
+    vec3 tangent, bitangent;
+    vec3 normal = calculate_normal(inPosition, tangent, bitangent);
+
+    vec3 T = InvTransposedModel * tangent;
+    vec3 B = InvTransposedModel * bitangent;
+    vec3 N = InvTransposedModel * normal;
+
+    outTBN = mat3(T, B, N);
     outWorld = worldPos.xyz;
 }

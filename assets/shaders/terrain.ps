@@ -1,5 +1,4 @@
-varying vec3 outNormal;
-varying vec2 outTexCoord;
+varying mat3 outTBN;
 varying vec3 outWorld;
 
 uniform float Roughness;
@@ -14,18 +13,42 @@ uniform sampler2D tex1;
 uniform sampler2D tex2;
 uniform sampler2D tex3;
 
+vec4 tri_planar(sampler2D tex, vec3 worldNormal, float tiling)
+{
+    vec3 blending = abs(worldNormal);
+    blending = normalize(max(blending, 0.00001));
+    float b = (blending.x + blending.y + blending.z);
+    blending /= b;
+
+    vec4 xaxis = texture2D(tex, outWorld.yz * tiling);
+    vec4 yaxis = texture2D(tex, outWorld.zx * tiling);
+    vec4 zaxis = texture2D(tex, outWorld.xy * tiling);
+    
+    return xaxis * blending.x + yaxis * blending.y + zaxis * blending.z;
+}
+
 void main()
 {
-    float tiling = 4.0;
+    float tiling = 0.005;
 
     vec3 lightDir = normalize(-SunPosition);
     const vec3 lightColor = vec3(1.0, 1.0, 1.0);
-    
-    vec2 uv = outTexCoord * tiling;
-    vec3 albedo = texture2D(tex1, uv).rgb;
-    float specular = texture2D(tex3, uv).r;
 
-    vec3 PBR = lightColor * cook_torrance(outWorld, outNormal, -lightDir, Roughness, Metallic, mix(0.6, 1.0, Specular * specular));
+    vec3 worldNormal = outTBN[2];
+    
+    vec3 albedo = tri_planar(tex1, worldNormal, tiling).rgb;
+    vec3 normalMap = tri_planar(tex2, worldNormal, tiling).rgb * 2.0 - 1.0;
+    vec4 metallicRoughness = tri_planar(tex3, worldNormal, tiling);
+
+    float roughness = metallicRoughness.r;
+    float metallic = metallicRoughness.a;
+
+    vec3 normal = normalize(outTBN * normalMap);
+
+    vec3 PBR = lightColor * cook_torrance(outWorld, normal, -lightDir, Roughness * roughness, Metallic * metallic, mix(0.6, 1.0, Specular));
+
+    vec3 shadowColor = vec3(0.0, 0.11, 0.25) * length(SunPosition);
+    PBR = mix(shadowColor, vec3(1.0), PBR);
 
     gl_FragColor = vec4(albedo * PBR, 1.0);
 }
