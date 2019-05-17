@@ -30,7 +30,7 @@ export function DemoScene(renderer)
         });
 
         renderer.loadShaderFromPath("./assets/shaders/skybox.ps", Snuff.ShaderTypes.Pixel, {
-            include: ["./assets/shaders/default_uniforms.h"],
+            include: ["./assets/shaders/default_uniforms.h", "./assets/shaders/atmosphere.h"],
             name: "SkyboxPS"
         });
 
@@ -75,7 +75,6 @@ export function DemoScene(renderer)
         _skyboxRenderer = _skybox.addComponent(new Snuff.RendererComponent(_skyboxMesh, _skyboxMaterial));
     }
 
-    var _t = 0.0;
     this.update = function(dt)
     {
         this.updateEntities(dt);
@@ -84,27 +83,41 @@ export function DemoScene(renderer)
             return a * (1.0 - t) + (b * t);
         }
 
-        _t += dt;
-        var height = Math.abs(Math.sin(_t));
-        var pi2 = Math.PI * 2.0;
-        var zT = (_t % pi2) / pi2;
-        var z = lerp(-1.0, 1.0, zT);
-        _skyboxRenderer.setUniformFloat3("SunPosition", Snuff.math.Vector3.fromValues(0.0, height, z));
+        var timeOfDay = new Number(document.querySelector("#timeOfDaySlider").value);
 
-        _camera.setRotationEuler(0.0, ((z + 1.0) * 0.5) * 180.0, 0.0);
+        var t = Math.min(timeOfDay, 1.0);
+        
+        var vecA = Snuff.math.Vector3.fromValues(0.5, 0.0, -1.0);
+        var vecB = Snuff.math.Vector3.fromValues(0.5, 1.0, 0.0);
+        var vecC = Snuff.math.Vector3.fromValues(0.5, 0.0, 1.0);
+
+        var vecFirst = Snuff.math.Vector3.create();
+        var vecSecond = Snuff.math.Vector3.create();
+
+        vecFirst = Snuff.math.Vector3.lerp(vecFirst, vecA, vecB, Math.min(1.0, t * 2.0));
+        vecSecond = Snuff.math.Vector3.lerp(vecSecond, vecB, vecC, Math.max(0.0, t - 0.5) * 2.0);
+
+        var vecFinal = Snuff.math.Vector3.create();
+        vecFinal = Snuff.math.Vector3.lerp(vecFinal, vecFirst, vecSecond, t);
+
+        _camera.setRotationEuler(0.0, ((vecFinal[2] + 1.0) * 0.5) * 180.0, 0.0);
+        
+        vecFinal = Snuff.math.Vector3.scale(vecFinal, vecFinal, 1.0 - Math.abs(t * 2.0 - 1.0));
+        _skyboxRenderer.setUniformFloat3("SunPosition", vecFinal);
+
+        _terrain.getComponent(Snuff.RendererComponent).setUniformFloat3("SunPosition", vecFinal);
     }
 
     this.draw = function(dt)
     {
         var renderer = this.getRenderer();
 
-        //if (renderer.getFrameCount() == 0)
-        //{
+        if (renderer.getFrameCount() == 0)
+        {
             _skyboxTarget.clear([1.0, 0.0, 1.0, 1.0]);
             renderer.setTarget(_skyboxTarget);
             renderer.renderPass(_camera, "SkyboxFilter");
-
-        //}
+        }
 
         renderer.setTarget(null);
         renderer.renderPass(_camera, "Skybox");

@@ -7,6 +7,6 @@
     "uniforms" :
     [
         { "name" : "InvViewDirProjection", "type" : "mat4" },
-        { "name" : "tex0", "type" : "samplerCube" }
+        { "name" : "SunPosition", "type" : "vec3" }
     ]
 }

@@ -4,9 +4,50 @@
 <head>
     <title>Snuffbox WebGL</title>
     <script src="./main.js" type="module"></script>
+
+    <style>
+        /* Straight from W3Schools.. */
+        .slider
+        {
+            -webkit-appearance: none;  /* Override default CSS styles */
+            appearance: none;
+            width: 300px;
+            height: 16px; /* Specified height */
+            background: #414141; /* Grey background */
+            outline: none; /* Remove outline */
+            opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+            -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+            transition: opacity .2s;
+            margin: 10px;
+        }
+
+        .slider:hover 
+        {
+            opacity: 1; /* Fully shown on mouse-over */
+        }
+
+        .slider::-webkit-slider-thumb 
+        {
+            -webkit-appearance: none; /* Override default look */
+            appearance: none;
+            width: 12px; /* Set a specific slider handle width */
+            height: 24px; /* Slider handle height */
+            background: rgb(76, 99, 175); /* Green background */
+            cursor: pointer; /* Cursor on hover */
+            box-shadow: 0px 2px 2px rgba(0.0, 0.0, 0.0, 0.5);
+        }
+    </style>
 </head>
-<body>
-    <div id="fps">FPS: 0</div>
-    <canvas id="glCanvas" width="1280" height="720"></canvas>
+<body style="background-color: #141414">
+    <div id="main" style="margin: auto; width: 1280px;">
+        <div style="position: absolute; display: inline-block; background-color: rgba(0.0, 0.0, 0.0, 0.25); padding: 5px">
+            <div id="fps" style="color: rgb(207, 207, 207); font-family: 'Verdana';">FPS: 0</div>
+        </div>
+        <canvas style="box-shadow: 4px 4px 10px rgba(0.0, 0.0, 0.0, 0.25);" id="glCanvas" width="1280" height="720"></canvas>
+        <div id="timeOfDay" style="background-color: rgba(0.0, 0.0, 0.0, 0.25); padding: 5px;">
+            <span style="margin-left: 10px; display: block; color: rgb(207, 207, 207); font-family: 'Verdana';">Time of day</span>
+            <input type="range" min="0" max="2" step="0.001" value="0.5" class="slider" id="timeOfDaySlider" class="slider">
+        </div>
+    </div>
 </body>
 </html>

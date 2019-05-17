@@ -16,6 +16,7 @@
         { "name" : "Metallic", "type" : "float" },
         { "name" : "Roughness", "type" : "float" },
         { "name" : "Specular", "type" : "float" },
+        { "name" : "SunPosition", "type" : "vec3" },
         { "name" : "tex0", "type" : "sampler2D" },
         { "name" : "tex1", "type" : "sampler2D" },
         { "name" : "tex2", "type" : "sampler2D" },
