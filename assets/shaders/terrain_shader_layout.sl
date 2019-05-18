@@ -17,6 +17,8 @@
         { "name" : "Roughness", "type" : "float" },
         { "name" : "Specular", "type" : "float" },
         { "name" : "SunPosition", "type" : "vec3" },
+        { "name" : "MoonPosition", "type" : "vec3" },
+        { "name" : "TimeOfDay", "type" : "float" },
         { "name" : "tex0", "type" : "sampler2D" },
         { "name" : "tex1", "type" : "sampler2D" },
         { "name" : "tex2", "type" : "sampler2D" },

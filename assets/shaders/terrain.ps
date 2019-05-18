@@ -3,8 +3,10 @@ varying vec3 outWorld;
 
 uniform float Roughness;
 uniform float Metallic;
-uniform float Specular;
+
 uniform vec3 SunPosition;
+uniform vec3 MoonPosition;
+uniform float TimeOfDay;
 
 uniform vec2 MapSize;
 
@@ -30,10 +32,6 @@ vec4 tri_planar(sampler2D tex, vec3 worldNormal, float tiling)
 void main()
 {
     float tiling = 0.005;
-
-    vec3 lightDir = normalize(-SunPosition);
-    const vec3 lightColor = vec3(1.0, 1.0, 1.0);
-
     vec3 worldNormal = outTBN[2];
     
     vec3 albedo = tri_planar(tex1, worldNormal, tiling).rgb;
@@ -43,12 +41,31 @@ void main()
     float roughness = metallicRoughness.r;
     float metallic = metallicRoughness.a;
 
-    vec3 normal = normalize(outTBN * normalMap);
+    vec3 normal = normalize(outTBN * mix(vec3(0.0, 0.0, 1.0), normalMap, 0.75));
 
-    vec3 PBR = lightColor * cook_torrance(outWorld, normal, -lightDir, Roughness * roughness, Metallic * metallic, mix(0.6, 1.0, Specular));
+    vec3 lightDirSun = normalize(-SunPosition);
+    vec3 lightDirMoon = normalize(-MoonPosition);
 
-    vec3 shadowColor = vec3(0.0, 0.11, 0.25) * length(SunPosition);
-    PBR = mix(shadowColor, vec3(1.0), PBR);
+    float sunFactor = min(max(0.0, -lightDirSun.y) * 10.0, 1.0);
+    float moonFactor = min(max(0.0, -lightDirMoon.y) * 10.0, 1.0);
 
-    gl_FragColor = vec4(albedo * PBR, 1.0);
+    lightDirSun *= sunFactor;
+    lightDirMoon *= moonFactor;
+
+    vec3 lightColorSun = vec3(1.0, 0.9, 0.9);
+    vec3 lightColorMoon = vec3(0.7, 0.7, 0.8);
+
+    const vec3 shadowColorSun = vec3(0.11, 0.11, 0.11);
+    const vec3 shadowColorMoon = vec3(0.0, 0.11, 0.25);
+
+    const float K = 0.8;
+    float PBRSun = cook_torrance(outWorld, normal, -lightDirSun, Roughness * roughness, Metallic * metallic, K);
+    float PBRMoon = cook_torrance(outWorld, normal, lightDirMoon, Roughness * roughness, Metallic * metallic, K);
+
+    vec3 finalColorSun = mix(shadowColorSun * sunFactor, vec3(1.0), PBRSun) * lightColorSun;
+    vec3 finalColorMoon = mix(shadowColorMoon * moonFactor, vec3(1.0), PBRMoon) * lightColorMoon;
+
+    vec3 final = finalColorSun + finalColorMoon;
+
+    gl_FragColor = vec4(albedo * final, 1.0);
 }

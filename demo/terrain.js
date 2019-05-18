@@ -1,6 +1,6 @@
 import * as Snuff from "../snuffbox-webgl/snuff-webgl.js"
 
-export function Terrain(scene, width, height)
+export function Terrain(scene, width, height, atmosphere)
 {
     var _heightMap = null;
     
@@ -14,6 +14,8 @@ export function Terrain(scene, width, height)
 
     var _width = width;
     var _height = height;
+
+    var _atmosphere = atmosphere;
 
     var _createTerrainMesh = function(scene)
     {
@@ -76,9 +78,16 @@ export function Terrain(scene, width, height)
 
         _renderer.setUniformFloat2("MapSize", Snuff.math.Vector2.fromValues(_width, _height));
 
-        _renderer.setUniformFloat("Metallic", 1.0);
+        _renderer.setUniformFloat("Metallic", 0.5);
         _renderer.setUniformFloat("Roughness", 0.95);
         _renderer.setUniformFloat("Specular", 0.75);
+    }
+
+    this.onUpdate = function(dt)
+    {
+        _renderer.setUniformFloat3("SunPosition", _atmosphere.getSunPosition());
+        _renderer.setUniformFloat3("MoonPosition", _atmosphere.getMoonPosition());
+        _renderer.setUniformFloat("TimeOfDay", _atmosphere.getTimeOfDay());
     }
 
     Snuff.Entity.call(this, scene);
