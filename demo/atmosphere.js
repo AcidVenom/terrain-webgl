@@ -7,6 +7,7 @@ export function Atmosphere(scene, skyboxTarget)
     var _skybox = null;
     var _skyboxRenderer = null;
     var _timeOfDay = 1.0;
+    var _day = 0.0;
     var _sunPosition = Snuff.math.Vector3.fromValues(0.0, 1.0, 0.0);
     var _moonPosition = Snuff.math.Vector3.fromValues(0.0, -1.0, 0.0);
     var _skyboxTarget = skyboxTarget;
@@ -59,6 +60,7 @@ export function Atmosphere(scene, skyboxTarget)
         while (_timeOfDay > 1.0)
         {
             _timeOfDay -= 1.0;
+            _day += 1.0;
         }
 
         var angle = _timeOfDay * Math.PI * 2.0 - Math.PI * 0.5;
@@ -72,6 +74,7 @@ export function Atmosphere(scene, skyboxTarget)
         _skyboxRenderer.setUniformFloat3("SunPosition", _sunPosition);
         _skyboxRenderer.setUniformFloat3("MoonPosition", _moonPosition);
         _skyboxRenderer.setUniformFloat("TimeOfDay", _timeOfDay);
+        _skyboxRenderer.setUniformFloat("Day", _day);
     }
 
     this.onUpdate = function(dt)
