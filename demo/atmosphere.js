@@ -71,6 +71,7 @@ export function Atmosphere(scene, skyboxTarget)
 
         _skyboxRenderer.setUniformFloat3("SunPosition", _sunPosition);
         _skyboxRenderer.setUniformFloat3("MoonPosition", _moonPosition);
+        _skyboxRenderer.setUniformFloat("TimeOfDay", _timeOfDay);
     }
 
     this.onUpdate = function(dt)
